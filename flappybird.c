@@ -21,7 +21,7 @@ int highScore = 0;
 char highScorePlayer[30] = "None";
 char birdIcon = '>';   // DEFAULT BIRD
 
-// -------------------- Utility --------------------
+// Utility
 
 void gotoXY(int x, int y) {
     COORD c = { (SHORT)x, (SHORT)y };
@@ -52,7 +52,7 @@ void printAnimated(const char *text, int delay, int color) {
     setColor(7);
 }
 
-// -------------------- High Score Handling --------------------
+// High Score Handling 
 
 void createDefaultHighScoreFile() {
     FILE *file = fopen("highscore.txt", "w");
@@ -88,7 +88,7 @@ void saveHighScore() {
     fclose(file);
 }
 
-// -------------------- Difficulty --------------------
+// Difficulty level
 
 void setDifficulty() {
     int choice;
@@ -133,7 +133,7 @@ void setDifficulty() {
     while (getchar() != '\n');
 }
 
-// -------------------- Shop --------------------
+//  Shop bird icon
 
 void showShop() {
     clearScreen();
@@ -180,7 +180,7 @@ void showShop() {
     Sleep(800);
 }
 
-// -------------------- Game Core --------------------
+//  complete Game loop 
 
 void initGame() {
     hideCursor();
@@ -221,6 +221,30 @@ void handleInput() {
         if (c == ' ' || c == 'w' || c == 'W') birdY -= FLAP_FORCE;
         if (c == 27) gameOver = 1;
     }
+}
+// Loader 
+void showLoader() {
+    clearScreen();
+    hideCursor();
+    char *text = "LOADING ASCII FLAPPY BIRD";
+    int len = strlen(text);
+    int row = HEIGHT / 2;
+    int col = (WIDTH - len) / 2;
+
+    for (int i = 0; i <= 100; i += 10) {
+        gotoXY(col, row);
+        printf("%s [", text);
+        int pos = i / 2;
+        for (int j = 0; j < 50; j++) {
+            if (j <= pos) putchar('#');
+            else putchar(' ');
+        }
+        printf("] %d%%", i);
+        Sleep(100);
+    }
+
+    Sleep(500);
+    clearScreen();  // <-- Clear loader before showing menu
 }
 
 void updateGame() {
@@ -263,7 +287,7 @@ void startGame() {
     getch();
 }
 
-// -------------------- Menu --------------------
+// Main Menu 
 
 void showInstructions() {
     clearScreen();
@@ -271,7 +295,7 @@ void showInstructions() {
 
     printf("1. Press SPACE or W to jump.\n");
     printf("2. Avoid pipes.\n");
-    printf("3. Don’t hit top or bottom.\n");
+    printf("3. Do not hit top or bottom.\n");
     printf("4. Score increases whenever you pass a pipe.\n\n");
     printf("Press any key to return...");
     getch();
@@ -279,18 +303,22 @@ void showInstructions() {
 
 void showAbout() {
     clearScreen();
-    printAnimated("\nABOUT\n", 20, 14);
+    printAnimated("\nABOUT THE GAME\n", 20, 14);
 
-    printf("ASCII Flappy Bird Game in C.\n");
-    printf("Made by: Muhammad Shuraim\n");
-    printf("With help of Allah SWT.\n\n");
+    printf("Project: ASCII Flappy Bird Game in C\n");
+    printf("Description: This is a console-based recreation of the popular Flappy Bird game.\n");
+    printf("The game includes difficulty levels, a bird shop, high score tracking, and interactive gameplay.\n");
 
+    // Animate the "Made by" line
+    printAnimated("Made by: Muhammad Shuraim\n", 20, 10);
     printf("Press any key to return...");
     getch();
 }
 
 void showMenu() {
     loadHighScore();
+
+    showLoader();  // Show loader only once
 
     int choice;
 
@@ -343,9 +371,10 @@ void showMenu() {
     }
 }
 
-// -------------------- MAIN --------------------
+// MAIN 
 
 int main() {
+	
     consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
     showMenu();
     return 0;
